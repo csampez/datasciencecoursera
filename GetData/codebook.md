@@ -119,7 +119,7 @@ The complete list of variables of each feature vector is available in 'features.
 
 Output
 -------
-The output file is named tidy_dataset.txt and is composed  only by the *mean* and *std* by subject and activity.
+The output file is named ```tidy_dataset.txt``` and is composed  only by the *mean* and *std* by subject and activity.
 
 Notes: 
 ======
