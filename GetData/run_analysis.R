@@ -60,9 +60,8 @@ tidy_data <- cast_data[order(cast_data$subject, cast_data$activity_name),]
 
 tidy_data <- tidy_data[,c(2,1,3:length(names(tidy_data)))]
 
-#Reindex Rows and move Subject to Column 1
+#Reindex Rows
 rownames(tidy_data) <- 1:nrow(tidy_data)
-
 
 #Output File
 write.table(tidy_data,file="tidy_dataset.txt", row.names=FALSE)
