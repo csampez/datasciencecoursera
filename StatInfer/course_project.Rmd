@@ -1,0 +1,77 @@
+---
+title: 'Statistical Inference Course Project Part 2'
+author: 'Carlos S. Pérez'
+output:
+  pdf_document: default
+---
+
+# Basic Inferential Data Analysis
+
+```{r, message=FALSE, results='hide', include=FALSE}
+#Make reproducible
+set.seed(881014)
+```
+
+  In the second part of the project, it is analyzed the `ToothGrowth` dataset in the R
+datasets package.
+
+The dataframe contains 60 observations and the features: length of odontoblasts (teeth) in each of 10 guinea pigs for each of three dose levels of Vitamin C (0.5, 1 and 2 mg) with each of two delivery methods orange juice (OJ) or ascorbic acid (VC).
+
+### Basic Exploratory Analysis
+
+```{r}
+library(ggplot2)
+library(datasets)
+summary(ToothGrowth)
+```
+
+```{r, fig.width=5, fig.height=3}
+ggplot(data=ToothGrowth, aes(x=as.factor(dose), y=len, fill=supp)) +
+  geom_bar(stat="identity",) +
+  facet_grid(. ~ supp) +
+  xlab("Dose") + 
+  ylab("Length") +
+  guides(fill=guide_legend(title="Supplement Type"))
+```
+
+The later plot shows the supplement type is positively correlated with the length of teeth in 0.5mg and 1mg dose. The effect of supplement type seems to make no difference in the higher dose 2mg.
+
+### Confidence Intervals and Hypothesis Testing
+
+The next code chunks show the results of testing hypothesis respect to effect of dose level and supplement type in tooth length.
+
+#### Length vs Supplement Type
+
+```{r}
+
+# assuming unequal variance between the groups
+# t test for group differences due to different supplement type
+t.test(len ~ supp, data = ToothGrowth)
+```
+
+Since the p-value is 0.06 and the confidence interval contains zero, the null hypothesis that the different supplement types have no effect on tooth length can not be rejected.
+
+#### Length vs Dose Level
+
+For analysing dose effect on tooth length we need to split the data in order to get only two types of dose in each dataframe.
+
+```{r}
+TG_0.5_1.0 <- subset (ToothGrowth, dose %in% c(0.5, 1.0)) 
+TG_0.5_2.0 <- subset (ToothGrowth, dose %in% c(0.5, 2.0)) 
+TG_1.0_2.0 <- subset (ToothGrowth, dose %in% c(1.0, 2.0)) 
+
+t.test(len ~ dose, data = TG_0.5_1.0)
+t.test(len ~ dose, data = TG_0.5_2.0)
+t.test(len ~ dose, data = TG_1.0_2.0)
+
+```
+
+For this hypothesis testing analysis the correspondent p-values 1.26e-7, 4.398e-14, 1.906e-05 are less than 0.05 and the confidence intervals do not contain zero. This shows that **statistically** mean tooth length increases as the dose level increases. 
+
+The main assumptions needed for the inferential part are
+
++ Through this part the tests is assumed that variances are different for the two groups being compared.
+
++ The sample population of guinea pigs is representative of the entire population of guinea pigs.
+
++ The experiment was done with random assignment of guinea pigs to different dose level categories and supplement type.

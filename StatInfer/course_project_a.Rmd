@@ -1,0 +1,70 @@
+---
+title: 'Statistical Inference Course Project Part 1'
+author: 'Carlos S. Pérez'
+output:
+  pdf_document: default
+---
+
+# Simulation Exercises
+This project investigate the exponential distribution in R and compare it with the Central Limit Theorem.
+
+The exponential distribution can be simulated in R with `rexp(n, lambda)` where
+`lambda` $\lambda$ is the rate parameter. The mean of exponential distribution is 
+$1/\lambda$ and the standard deviation is also $1/\lambda$. For this simulation,
+we set $\lambda=0.2$ for all the simulations. 
+
+The following code generates a thousand simulated averages of 40 exponentials.
+
+```{r}
+library(ggplot2)
+#Make reproducible
+set.seed(881014)
+
+lambda <- 0.2
+
+num_simulations <- 1000
+
+sample_size <- 40
+
+#all simulations
+simulations <- matrix(rexp(num_simulations*sample_size,rate=lambda),
+               num_simulations, sample_size)
+
+#Average
+exps_means <- rowMeans(simulations)
+```
+
+### Sample Mean versus Theoretical Mean
+
+The next plot shows the distribution of the sample average (i.e. the simulated mean of 40 exponentials), since the sample mean is distributed in a normal fashion we expect that its mean (the mean of the sample mean distribution) will be close $1/\lambda$.
+
+```{r,  fig.width=5, fig.height=3}
+# plot the histogram of sample mean with legend
+hist(exps_means, breaks=50, prob=TRUE,
+     main="Sample Mean Distribution",xlab="")
+lines(density(exps_means))
+abline(v=1/lambda, col="blue")
+xfit <- seq(min(exps_means), max(exps_means), length=100)
+yfit <- dnorm(xfit, mean=1/lambda, sd=(1/lambda/sqrt(sample_size)))
+lines(xfit, yfit, pch=22, col="blue", lty=2)
+legend('topright', c("Simulated", "Theoretical"), lty=c(1,2), col=c("black", "blue"))
+```
+
+The plot shows that the distribution of sample means is centered at `r mean(exps_means)`
+and the theoretical center of the distribution is $\lambda^{-1}$ = `r 1/lambda` indicated with blue solid line.
+
+### Sample Variance versus Theoretical Variance
+
+If a variance comparison is made we have that the **sample means variance** is `r var(exps_means)` while the **theoretical variance**
+of the distribution is $\sigma^2 / n = 1/(\lambda^2 n) = 1/(0.04 \times 40)$ =
+`r 1/(0.04 * 40)`. 
+
+### Simulated Distribution 
+
+The next figure compare the distribution of averages of 40 exponentials, suggesting that it is very close to a normal distribution.
+
+```{r, fig.width=5, fig.height=3}
+#plot of distribution difference
+qqnorm(exps_means); qqline(exps_means)
+```
+
