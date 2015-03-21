@@ -1,0 +1,65 @@
+quiz 1
+
+1.
+Asking the right question.	
+
+2. Our algorithm may be overfitting the training data, predicting both the signal and the noise.
+
+3 60% in the training set, 40% in the testing set.	
+
+4 Accuracy
+
+5 9%	
+
+
+quiz 2
+
+1. 
+adData = data.frame(diagnosis,predictors)
+testIndex = createDataPartition(diagnosis, p = 0.50,list=FALSE)
+training = adData[-testIndex,]
+testing = adData[testIndex,]
+
+
+2. There is a step-like pattern in the plot of outcome versus index in the training set that isn't explained by any of the predictor variables so there may be a variable missing.
+
+3. There are a large number of values that are the same and even if you took the log(SuperPlasticizer + 1) they would still all be identical so the distribution would not be symmetric.
+
+4 9
+
+5 Non-PCA Accuracy: 0.65 
+PCA Accuracy: 0.72
+
+
+
+quiz 3 
+
+a. PS 
+b. WS 
+c. PS
+d. Not possible to predict 
+
+2. The bias is larger and the variance is smaller. Under leave one out cross validation K is equal to the sample size.
+
+3 2.875. It is strange because Area should be a qualitative variable - but tree is reporting the average value of Area as a numeric variable in the leaf predicted for newdata
+
+4. Test Set Misclassification: 0.31 
+Training Set: 0.2
+
+5. he order of the variables is:
+x.2, x.1, x.5, x.6, x.8, x.4, x.9, x.3, x.7,x.10
+
+
+quiz4 
+
+1. RF Accuracy = 0.6061 
+GBM Accuracy = 0.5325 
+Agreement Accuracy = 0.6518
+
+2.Stacked Accuracy: 0.79 is better than random forests and lda and the same as boosting.
+
+3. Cement 
+
+4. 96%
+
+5. 6.72

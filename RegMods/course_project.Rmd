@@ -1,0 +1,124 @@
+---
+title: "Transmission Effect on Miles Per Galon (MPG)"
+output:
+  pdf_document: default
+---
+
+# Motor Trend, a magazine about the automobile industry. 
+
+### Problem
+
+Looking at a data set of a collection of cars, interested in exploring the relationship between a set of variables and miles per gallon (MPG) (outcome variable). 
+
+They are particularly interested in the following two questions
+
+- “Is an automatic or manual transmission better for MPG”
+
+- "Quantify the MPG difference between automatic and manual transmissions"
+
+### Data
+
+First mtcars data set is loaded at start from R base
+
+### Analysis 
+
+#### Exploration 
+
+
+First we clean and preparate the data
+```{r, fig.cap = "Figure 1", echo = TRUE}
+library(ggplot2)
+library(corrplot)
+
+mtcars2<-mtcars
+
+#factor labeling
+mtcars$gear <- factor(mtcars$gear,levels=c(3,4,5),
+  	labels=c("3gears","4gears","5gears")) 
+mtcars$am <- factor(mtcars$am,levels=c(0,1),
+  	labels=c("Automatic","Manual")) 
+mtcars$cyl <- factor(mtcars$cyl,levels=c(4,6,8),
+   labels=c("4cyl","6cyl","8cyl")) 
+
+summary(mtcars)
+```
+
+Figure number 2 shows the distribution of miles per galon in relation with horsepower, cylinders, gears and transmission. 
+The plot shows a concentration over the upper left corner for 4 cyl where manual is the major part focusing around 27, while in 8 cyl and 3gears the automatic type is clustered around 15 miles. 
+
+```{r, fig.cap = "Figure 2", echo = TRUE}
+#mpg vs hp with transmission, facet cyl vs gear
+
+qplot(hp, mpg, data=mtcars, shape=am, color=am, 
+   facets=gear~cyl, size=I(3),
+   xlab="Horsepower", ylab="Miles per Gallon") 
+```
+
+
+The next plot shows a basic exploratory analysis in terms of correlation matrix, where can be seen that mpg is strongly related to cyl, disp, hp and wt.
+```{r, fig.cap = "Figure 5", echo = TRUE}
+
+cor_plot<-corrplot.mixed(cor(mtcars2))
+
+```
+
+
+#### Regression 
+In the next plot it is done a piecewise  regression by type and some relations are contrasted.
+```{r, fig.cap = "Figure 3", echo = TRUE, warning=FALSE}
+
+# Separate regressions of mpg on weight for each number of cylinders and transmission
+qplot(wt, mpg, data=mtcars, geom=c("point", "smooth"), 
+   method="lm", formula=y~x, color=cyl,shape=am, 
+   main="Regression of MPG on Weight", 
+   xlab="Weight", ylab="Miles per Gallon")
+
+```
+
+Next 3 models are done: one only with am variables, another with all variables and a lastone with step wise selection for predictors.
+```{r, echo = FALSE}
+
+# univariate model
+am_model <- lm(mpg ~ am, data = mtcars)
+
+# all vars model
+all_model = lm(mpg ~ ., data = mtcars)
+
+# step wise regression
+step_model <- step(lm(mpg ~ ., data = mtcars), trace = 0)
+
+# coefficients
+summary(am_model)
+summary(all_model)
+summary(step_model)
+
+#anova results
+anova(am_model, step_model,all_model)
+
+```
+As can be observed the anova results indicate that the step wise model has a better performance. 
+The figure number 4 show the basic plots for a regression fit. The one on residuals and q-q plot show that residuals have a very-close-to normal distribution.   
+
+```{r, fig.cap = "Figure 4", echo = TRUE}
+
+par(mfrow=c(2,2))
+# Reg plots
+plot(step_model)
+
+```
+
+For testing the global effect of transmission type over mpg hypothesis testing is done.
+
+```{r, echo = FALSE}
+
+#F test for variances ratio
+auto<-mtcars[mtcars$am=='Automatic','mpg']
+man<-mtcars[mtcars$am=='Manual','mpg']
+
+var.test(auto,man)
+
+#t test for difference of means 
+
+t.test(mpg ~ am, data = mtcars)
+
+```
