@@ -1,8 +1,5 @@
----
-title: "Practical Machine Learning: Course Project"
-output: html_document
----
-# PRACTICAL MACHINE LEARNING COURSE PROJECT
+# PRACTICAL MACHINE LEARNING
+# Course Project
 
 ## Background
 
@@ -96,7 +93,7 @@ confusionMatrix(cross$classe, predictCross)[3]
 ##         0.0000            NaN
 ```
 
-It can be observed that Accuracy is at 99.47% with the crossvalidation set so out of sample error is at 0.53% . 
+It can be observed that Accuracy is at 99.47% with the crossvalidation set so out of sample error estimate is at 0.53%. 
 
 ## Predict new data!
 
